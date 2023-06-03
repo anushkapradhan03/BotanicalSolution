@@ -74,9 +74,11 @@ WSGI_APPLICATION = 'BotanicalSolution.wsgi.application'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+'''
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173'
 ]
+'''
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
