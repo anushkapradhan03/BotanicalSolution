@@ -6,12 +6,16 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-
+from django.middleware.csrf import get_token
 from .models import Blog
 from BotanicalApi.mlModelsFunctions import predict_image, trainPlantPredictionModel
 
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
+
+def get_csrf_token(request):
+    csrf_token = get_token(request)
+    return JsonResponse({'csrfToken': csrf_token})
 
 @csrf_exempt
 def process_image(request):
