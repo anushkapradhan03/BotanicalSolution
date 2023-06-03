@@ -1,0 +1,11 @@
+temperature,elevation,precipitation,plant_type.
+25,1000,50,Rose.
+28,800,70,Tulip.
+30,1200,40,Sunflower.
+20,500,80,Lavender.
+22,900,60,Daisy.
+19,700,55,Rose.
+26,1100,75,Tulip.
+28,850,65,Sunflower.
+18,450,90,Lavender.
+23,950,60,Daisy
