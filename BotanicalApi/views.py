@@ -25,6 +25,12 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 
 
+# Model saved with Keras model.save()
+diseaseDetectionAndSolution= r'D:\remoteGIThub\BotanicalSolution\BotanicalApi\mlModel\diseaseDetectionAndSolutionModel.h5'
+
+# # Load your trained model
+DiseaseDetectionAndSolutionModel = load_model(diseaseDetectionAndSolution)
+
 def get_csrf_token(request):
     csrf_token = get_token(request)
     return JsonResponse({'csrfToken': csrf_token})
@@ -47,10 +53,13 @@ def model_predict(img_path, model):
 def process_image(request):
     if request.method == 'POST':
         # Save the image and enum value
-        image = request.FILES.get('image')
+        f = request.FILES.get('image')
         enum_value = request.POST.get('enum')
-        #f = request.files['file']
-        f = image
+        #f = request.files['image']
+        print(f)
+        #print(image)
+        #f = image
+        #f.filename = 'detectThis'
 
         # Perform any necessary processing or saving of the image
         # Save the image temporarily
@@ -62,20 +71,17 @@ def process_image(request):
 
         # Call the predict_image function from ml_model.py
 
-        # Model saved with Keras model.save()
-        MODEL_PATH = './mlModel/my_model.h5'
-
-        # Load your trained model
-        model = load_model(MODEL_PATH)
+        
 
         # Save the file to ./uploads
         basepath = os.path.dirname(__file__)
         file_path = os.path.join(
             basepath, 'uploads',f.filename )  #secure_filename(f.filename)
         f.save(file_path)
+        #file_path = r'D:\remoteGIThub\BotanicalSolution\BotanicalApi\uploads\PaperBellBact Spot.JPG'
 
         # Make prediction
-        preds = model_predict(file_path, model)
+        preds = model_predict(file_path, DiseaseDetectionAndSolutionModel)
 
         # Process your result for human
         pred_class = preds.argmax()              # Simple argmax
@@ -115,15 +121,16 @@ def plant_suggestion(request):
 
         # Split the dataset into input features (X) and target variable (y)
         X = dataset[['temperature', 'elevation', 'precipitation']]
-        y = dataset['plant_type']
+        y = dataset['plant_type.']
         print('set')
         # Create and train the model
         model = DecisionTreeClassifier()
         model.fit(X, y)
 
         # Perform the prediction based on the given values
-        #predicted_plant = model.predict([[temperature, elevation, precipitation]])
-        predicted_plant = ["abc", "def"]
+        predicted_plant = model.predict([[temperature, elevation, precipitation]])
+        #predicted_plant = ["abc", "def"]
+        predicted_plant = predicted_plant.tolist() 
 
         return JsonResponse({'predicted_plant': predicted_plant})
     else:
