@@ -9,5 +9,5 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('signup/', views.signup, name='signup'),
     path('signout/', views.signout, name='signout'),
-    path('get-csrf-token/', views.get_csrf_token, name='get_csrf_token'),
+    path('get_csrf_token/', views.get_csrf_token, name='get_csrf_token'),
 ]

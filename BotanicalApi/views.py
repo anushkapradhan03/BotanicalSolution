@@ -12,10 +12,36 @@ from BotanicalApi.mlModelsFunctions import predict_image, trainPlantPredictionMo
 
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
+import sys
+import os
+import glob
+import re
+import numpy as np
+import cv2
+
+# Keras
+from tensorflow.keras.applications.imagenet_utils import preprocess_input, decode_predictions
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+
 
 def get_csrf_token(request):
     csrf_token = get_token(request)
     return JsonResponse({'csrfToken': csrf_token})
+
+
+def model_predict(img_path, model):
+    
+    #update by ViPS
+    img = cv2.imread(img_path)
+    new_arr = cv2.resize(img,(100,100))
+    new_arr = np.array(new_arr/255)
+    new_arr = new_arr.reshape(-1, 100, 100, 3)
+    
+
+    
+    preds = model.predict(new_arr)
+    return preds
 
 @csrf_exempt
 def process_image(request):
@@ -23,17 +49,50 @@ def process_image(request):
         # Save the image and enum value
         image = request.FILES.get('image')
         enum_value = request.POST.get('enum')
+        #f = request.files['file']
+        f = image
 
         # Perform any necessary processing or saving of the image
         # Save the image temporarily
-        image_path = '/path/to/save/image.png'  # Replace with the actual path to save the image
+        #image_path = '/path/to/save/image.png'  # Replace with the actual path to save the image
 
-        with open(image_path, 'wb') as file:
-            for chunk in image.chunks():
-                file.write(chunk)
+        # with open(image_path, 'wb') as file:
+        #     for chunk in image.chunks():
+        #         file.write(chunk)
 
         # Call the predict_image function from ml_model.py
-        prediction = predict_image(image_path)
+
+        # Model saved with Keras model.save()
+        MODEL_PATH = './mlModel/my_model.h5'
+
+        # Load your trained model
+        model = load_model(MODEL_PATH)
+
+        # Save the file to ./uploads
+        basepath = os.path.dirname(__file__)
+        file_path = os.path.join(
+            basepath, 'uploads',f.filename )  #secure_filename(f.filename)
+        f.save(file_path)
+
+        # Make prediction
+        preds = model_predict(file_path, model)
+
+        # Process your result for human
+        pred_class = preds.argmax()              # Simple argmax
+ 
+        
+        CATEGORIES = ['Pepper__bell___Bacterial_spot','Pepper__bell___healthy',
+            'Potato___Early_blight' ,'Potato___Late_blight', 'Potato___healthy',
+            'Tomato_Bacterial_spot' ,'Tomato_Early_blight', 'Tomato_Late_blight',
+            'Tomato_Leaf_Mold' ,'Tomato_Septoria_leaf_spot',
+            'Tomato_Spider_mites_Two_spotted_spider_mite' ,'Tomato__Target_Spot',
+            'Tomato__YellowLeaf__Curl_Virus', 'Tomato_mosaic_virus',
+            'Tomato_healthy']
+        
+        prediction = CATEGORIES[pred_class]
+
+
+        #prediction = predict_image(image_path)
 
         # Return the prediction result or any other response
         return JsonResponse({'message': 'Image processed successfully', 'prediction': prediction})
@@ -63,8 +122,8 @@ def plant_suggestion(request):
         model.fit(X, y)
 
         # Perform the prediction based on the given values
-        predicted_plant = model.predict([[temperature, elevation, precipitation]])
-        #predicted_plant = ["abc", "def"]
+        #predicted_plant = model.predict([[temperature, elevation, precipitation]])
+        predicted_plant = ["abc", "def"]
 
         return JsonResponse({'predicted_plant': predicted_plant})
     else:
