@@ -1,12 +1,16 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 from django.middleware.csrf import get_token
 from BotanicalApi.constant.BotanicalConstant import BotanicalConstant
+from BotanicalApi.modelLogic.deseaseDetectionService import detectDesease
+from BotanicalApi.modelLogic.detectObjectType import detectIsLeaf
 # from BotanicalApi.modelLogic.deseaseDetectionService import detectDesease
 from BotanicalApi.modelLogic.plantSuggestionService import suggestPlant
+import os
 
 
 # get Token
@@ -20,30 +24,52 @@ def get_csrf_token(request):
 
 @csrf_exempt
 def process_image(request):
+    message = ""
     if request.method == 'POST':
         # Save the image and enum value
-        f = request.FILES.get('image')
+        uploaded_file = request.FILES.get('image')
         enum_value = request.POST.get('enum')
-        print(f)
+        print(uploaded_file)
 
-
-        # Save the file to ./uploads
-        basepath = os.path.dirname(__file__)
-        file_path = os.path.join(
-            basepath, 'uploads',f.filename )  #secure_filename(f.filename)
-        f.save(file_path)
-        #file_path = r'D:\remoteGIThub\BotanicalSolution\BotanicalApi\uploads\PaperBellBact Spot.JPG'
-
+        try:
+            # Save the file to ./uploads
+            basepath = os.path.dirname(__file__)
+            print('basepath',basepath)
+            fs = FileSystemStorage(location=os.path.join(os.path.dirname(__file__), 'uploads'))
+            filename = fs.save(uploaded_file.name, uploaded_file)
+            file_path = fs.url(filename)
+        except:
+            return JsonResponse({'message': 'Image Saving Failed', 'prediction': "error"})
 
         # detect Plant leave of not
+        try:
+            messageLeaf, isPlant = detectIsLeaf(file_path)
+            message = message + 'This Image is : ' + messageLeaf
+            
+        except:
+            return JsonResponse({'message': 'Image processed Fail', 'prediction': "error"})
+        
+        if(isPlant):
 
+            try:
+                if(enum_value=="solution"):
+                    prediction = detectDesease(file_path)
+                    prediction = "Testing"
 
+                    # Return the prediction result or any other response
+                    message = message + " | Image processed successfully: detectDesease'" 
+                    return JsonResponse({'message': message, 'prediction': prediction})
+                elif(enum_value=="leaf"):
+                    # prediction = detectLeafType(file_path)
+                    prediction = "Feature Under Development"
+                    message = message + " | Image processed successfully: leafPredection'" 
+                    return JsonResponse({'message': message, 'prediction': prediction})
+            
+            except:
+                return JsonResponse({'message': 'Image or Enum Failed or not passed', 'prediction': "error"})
+        else:
+           return JsonResponse({'message': message, 'prediction': "Not a leaf"}) 
 
-        # prediction = detectDesease(file_path)
-        prediction = "Testing"
-
-        # Return the prediction result or any other response
-        return JsonResponse({'message': 'Image processed successfully', 'prediction': prediction})
     else:
         return JsonResponse({'error': 'Invalid request method'})
 
