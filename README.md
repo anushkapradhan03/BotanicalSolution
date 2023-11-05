@@ -16,6 +16,9 @@ myenv\Scripts\activate
 source myenv/bin/activate
 
 
+# Run
+$ python manage.py runserver
+
 
 
 ## Windows
@@ -23,6 +26,9 @@ pip install requirements.txt
 
 ## macOS and Linux
 pip3 intall  requirements.txt 
+
+##Tensore Flow
+https://www.tensorflow.org/install/pip#windows-native
 
 
 
@@ -36,4 +42,6 @@ pip freeze > requirements.txt
 
 ## macOS and Linux
 pip3 freeze > requirements.txt 
+
+
 

@@ -1,11 +1,207 @@
 temperature,elevation,precipitation,plant_type
-25,1000,50,Rose
-28,800,70,Tulip
-30,1200,40,Sunflower
-20,500,80,Lavender
-22,900,60,Daisy
-19,700,55,Rose
-26,1100,75,Tulip
-28,850,65,Sunflower
-18,450,90,Lavender
-23,950,60,Daisy
+27, 750, 70, Rose
+24, 1000, 55, Tulip
+29, 800, 80, Sunflower
+21, 600, 45, Lavender
+26, 950, 68, Daisy
+31, 1100, 75, Lily
+19, 450, 60, Orchid
+33, 1200, 90, Pansy
+22, 700, 50, Daffodil
+28, 1050, 70, Marigold
+24, 850, 55, Poppy
+30, 950, 75, Iris
+25, 700, 65, Violet
+28, 1100, 60, Dandelion
+32, 850, 80, Hyacinth
+20, 450, 45, Sunflower
+26, 1000, 68, Zinnia
+23, 700, 50, Rosemary
+31, 1150, 75, Jasmine
+27, 800, 70, Lilac
+22, 600, 55, Peony
+29, 1050, 80, Daisyleaf
+24, 750, 70, Carnation
+30, 1000, 55, Daffodil
+25, 800, 80, Azalea
+28, 1150, 60, Petunia
+33, 700, 90, Geranium
+22, 850, 45, Snapdragon
+26, 1100, 68, Chrysanthemum
+21, 450, 50, Daisy
+32, 950, 75, Camellia
+27, 700, 65, Begonia
+19, 1100, 70, Hibiscus
+29, 600, 55, Gladiolus
+24, 1050, 80, Freesia
+30, 700, 60, Gerbera
+23, 450, 70, Bluebell
+28, 950, 68, Cosmos
+31, 1100, 45, Foxglove
+20, 850, 75, Hollyhock
+22, 800, 60, Iceland Poppy
+25, 600, 70, Lavender
+33, 1050, 55, Magnolia
+27, 750, 70, Marigold
+24, 1000, 55, Morning Glory
+29, 800, 80, Nasturtium
+21, 600, 45, Orchid
+26, 950, 68, Peony
+31, 1100, 75, Primrose
+19, 450, 60, Snapdragon
+33, 1200, 90, Sunflower
+22, 700, 50, Tulip
+28, 1050, 70, Viola
+24, 850, 55, Zinnia
+30, 950, 75, Chrysanthemum
+25, 700, 65, Daisyleaf
+28, 1100, 60, Gerbera
+32, 850, 80, Gladiolus
+20, 450, 45, Hibiscus
+26, 1000, 68, Marigold
+23, 700, 50, Nasturtium
+31, 1150, 75, Orchid
+27, 800, 70, Pansy
+22, 600, 55, Peony
+29, 1050, 80, Rose
+24, 1050, 80, Snapdragon
+30, 700, 60, Tulip
+25, 800, 80, Viola
+28, 1150, 60, Zinnia
+33, 700, 90, Azalea
+22, 850, 45, Begonia
+26, 1100, 68, Camellia
+21, 450, 50, Carnation
+32, 950, 75, Chrysanthemum
+27, 700, 65, Cosmos
+19, 1100, 70, Daisy
+29, 600, 55, Daffodil
+24, 1050, 80, Daisyleaf
+30, 700, 60, Dandelion
+23, 450, 70, Daisy
+28, 950, 68, Freesia
+31, 1100, 45, Geranium
+20, 850, 75, Gerbera
+22, 800, 60, Gladiolus
+25, 600, 70, Hollyhock
+33, 1050, 55, Hyacinth
+27, 750, 70, Iceland Poppy
+24, 1000, 55, Iris
+29, 800, 80, Jasmine
+21, 600, 45, Lavender
+26, 950, 68, Lilac
+31, 1100, 75, Lily
+19, 450, 60, Magnolia
+33, 1200, 90, Marigold
+22, 700, 50, Morning Glory
+28, 1050, 70, Nasturtium
+24, 850, 55, Orchid
+30, 950, 75, Pansy
+25, 700, 65, Peony
+28, 1100, 60, Primrose
+32, 850, 80, Snapdragon
+20, 450, 45, Sunflower
+26, 1000, 68, Tulip
+23, 700, 50, Viola
+31, 1150, 75, Zinnia
+27, 800, 70, Azalea
+22, 600, 55, Begonia
+26, 1100, 68, Camellia
+21, 450, 50, Carnation
+32, 950, 75, Chrysanthemum
+27, 700, 65, Cosmos
+19, 1100, 70, Daisy
+29, 600, 55, Daffodil
+24, 1050, 80, Daisyleaf
+30, 700, 60, Dandelion
+23, 450, 70, Daisy
+28, 950, 68, Freesia
+31, 1100, 45, Geranium
+20, 850, 75, Gerbera
+22, 800, 60, Gladiolus
+25, 600, 70, Hollyhock
+33, 1050, 55, Hyacinth
+27, 750, 70, Iceland Poppy
+24, 1000, 55, Iris
+29, 800, 80, Jasmine
+21, 600, 45, Lavender
+26, 950, 68, Lilac
+31, 1100, 75, Lily
+19, 450, 60, Magnolia
+33, 1200, 90, Marigold
+22, 700, 50, Morning Glory
+28, 1050, 70, Nasturtium
+24, 850, 55, Orchid
+30, 950, 75, Pansy
+25, 700, 65, Peony
+28, 1100, 60, Primrose
+32, 850, 80, Snapdragon
+20, 450, 45, Sunflower
+26, 1000, 68, Tulip
+23, 700, 50, Viola
+31, 1150, 75, Zinnia
+27, 800, 70, Azalea
+22, 600, 55, Begonia
+26, 1100, 68, Camellia
+21, 450, 50, Carnation
+32, 950, 75, Chrysanthemum
+27, 700, 65, Cosmos
+19, 1100, 70, Daisy
+29, 600, 55, Daffodil
+24, 1050, 80, Daisyleaf
+30, 700, 60, Dandelion
+23, 450, 70, Daisy
+28, 950, 68, Freesia
+31, 1100, 45, Geranium
+20, 850, 75, Gerbera
+22, 800, 60, Gladiolus
+25, 600, 70, Hollyhock
+33, 1050, 55, Hyacinth
+27, 750, 70, Iceland Poppy
+24, 1000, 55, Iris
+29, 800, 80, Jasmine
+21, 600, 45, Lavender
+26, 950, 68, Lilac
+31, 1100, 75, Lily
+19, 450, 60, Magnolia
+33, 1200, 90, Marigold
+22, 700, 50, Morning Glory
+28, 1050, 70, Nasturtium
+24, 850, 55, Orchid
+30, 950, 75, Pansy
+25, 700, 65, Peony
+28, 1100, 60, Primrose
+32, 850, 80, Snapdragon
+20, 450, 45, Sunflower
+26, 1000, 68, Tulip
+23, 700, 50, Viola
+31, 1150, 75, Zinnia
+27, 800, 70, Azalea
+22, 600, 55, Begonia
+26, 1100, 68, Camellia
+21, 450, 50, Carnation
+32, 950, 75, Chrysanthemum
+27, 700, 65, Cosmos
+19, 1100, 70, Daisy
+29, 600, 55, Daffodil
+24, 1050, 80, Daisyleaf
+30, 700, 60, Dandelion
+23, 450, 70, Daisy
+28, 950, 68, Freesia
+31, 1100, 45, Geranium
+20, 850, 75, Gerbera
+22, 800, 60, Gladiolus
+25, 600, 70, Hollyhock
+33, 1050, 55, Hyacinth
+27, 750, 70, Iceland Poppy
+24, 1000, 55, Iris
+29, 800, 80, Jasmine
+21, 600, 45, Lavender
+26, 950, 68, Lilac
+31, 1100, 75, Lily
+19, 450, 60, Magnolia
+33, 1200, 90, Marigold
+22, 700, 50, Morning Glory
+28, 1050, 70, Nasturtium
+24, 850, 55, Orchid
+30, 950, 75, Pansy

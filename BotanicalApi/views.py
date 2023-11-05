@@ -1,71 +1,18 @@
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
-from .models import Blog
-from BotanicalApi.mlModelsFunctions import predict_image, trainPlantPredictionModel
-
-from django.conf import settings
-
-
-import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
-import sys
-import os
-import glob
-import re
-import numpy as np
-import cv2
-
-# Keras
-import TensorFlow1 as tf
-from TensorFlow1 import keras
-import tensorflow_hub as hub
-
-# from tensorflow.keras.applications.imagenet_utils import preprocess_input, decode_predictions
-# from tensorflow.keras.models import load_model
-# from tensorflow.keras.preprocessing import image
+from BotanicalApi.constant.BotanicalConstant import BotanicalConstant
+# from BotanicalApi.modelLogic.deseaseDetectionService import detectDesease
+from BotanicalApi.modelLogic.plantSuggestionService import suggestPlant
 
 
-basePath = settings.BASE_DIR
-
-
-# Model saved with Keras model.save()
-diseaseDetectionAndSolutionRelativePath = '/BotanicalApi/mlModel/diseaseDetectionAndSolutionModel.h5'
-datasetRelativePath = 'BotanicalApi/plantprdecitiondataset.csv'
-diseaseDetectionAndSolutionModelPath= os.path.join(basePath, diseaseDetectionAndSolutionRelativePath)
-datasetPath = os.path.join(basePath, datasetRelativePath)
-
-# # Load your trained model
-# DiseaseDetectionAndSolutionModel = load_model(diseaseDetectionAndSolution)
-
+# get Token
 def get_csrf_token(request):
     csrf_token = get_token(request)
     return JsonResponse({'csrfToken': csrf_token})
-
-# Function to load a saved .h5 model and make predictions
-def load_and_predict_h5_model(model_path):
-    # Load the saved model
-    model = keras.models.load_model(model_path)
-    return model
-
-def model_predict(img_path, model):
-    
-    #update by ViPS
-    img = cv2.imread(img_path)
-    new_arr = cv2.resize(img,(100,100))
-    new_arr = np.array(new_arr/255)
-    new_arr = new_arr.reshape(-1, 100, 100, 3)
-
-    preds = model.predict(new_arr)
-    return preds
-
-
 
 
 
@@ -87,24 +34,13 @@ def process_image(request):
         f.save(file_path)
         #file_path = r'D:\remoteGIThub\BotanicalSolution\BotanicalApi\uploads\PaperBellBact Spot.JPG'
 
-        # Make prediction
-        DiseaseDetectionAndSolutionModel = load_and_predict_h5_model(diseaseDetectionAndSolutionModelPath)
-        preds = model_predict(file_path, DiseaseDetectionAndSolutionModel)
 
-        # Process your result for human
-        pred_class = preds.argmax()              # Simple argmax
- 
-        
-        CATEGORIES = ['Pepper__bell___Bacterial_spot','Pepper__bell___healthy',
-            'Potato___Early_blight' ,'Potato___Late_blight', 'Potato___healthy',
-            'Tomato_Bacterial_spot' ,'Tomato_Early_blight', 'Tomato_Late_blight',
-            'Tomato_Leaf_Mold' ,'Tomato_Septoria_leaf_spot',
-            'Tomato_Spider_mites_Two_spotted_spider_mite' ,'Tomato__Target_Spot',
-            'Tomato__YellowLeaf__Curl_Virus', 'Tomato_mosaic_virus',
-            'Tomato_healthy']
-        
-        prediction = CATEGORIES[pred_class]
+        # detect Plant leave of not
 
+
+
+        # prediction = detectDesease(file_path)
+        prediction = "Testing"
 
         # Return the prediction result or any other response
         return JsonResponse({'message': 'Image processed successfully', 'prediction': prediction})
@@ -115,116 +51,109 @@ def process_image(request):
 def plant_suggestion(request):
     if request.method == 'POST':
         # Access the temperature, precipitation, and elevation values
-        temperature = request.POST.get('temperature')
-        precipitation = request.POST.get('precipitation')
-        elevation = request.POST.get('elevation')
-        print(temperature +" "+ precipitation+" "+elevation)
+        try:
+            temperature = request.POST.get(BotanicalConstant.temperature)
+            precipitation = request.POST.get(BotanicalConstant.precipitation)
+            elevation = request.POST.get(BotanicalConstant.elevation)
 
-        # Load the dataset
-       
-        dataset = pd.read_csv(datasetPath)
-        print(dataset)
+            try:
+                predicted_plant = suggestPlant(temperature, precipitation, elevation)  
+                return JsonResponse({'predicted_plant': predicted_plant})  
+            except:
+                return JsonResponse({'predicted_plant Failed To predict'}, status=206)
 
-        # Split the dataset into input features (X) and target variable (y)
-        X = dataset[['temperature', 'elevation', 'precipitation']]
-        y = dataset['plant_type.']
-        print('set')
-        # Create and train the model
-        model = DecisionTreeClassifier()
-        model.fit(X, y)
-
-        # Perform the prediction based on the given values
-        predicted_plant = model.predict([[temperature, elevation, precipitation]])
-        #predicted_plant = ["abc", "def"]
-        predicted_plant = predicted_plant.tolist() 
-
-        return JsonResponse({'predicted_plant': predicted_plant})
+        except:
+            return JsonResponse({'error': 'temperature, precipitation, elevation not form-data'},  status=404)
     else:
-        return JsonResponse({'error': 'Invalid request method'})
+        return JsonResponse({'error': 'Invalid request method'}, status=404)
 
 
-# @csrf_exempt
-# def post_blog(request):
-#     if request.method == 'POST':
-#         # Retrieve the blog details from the request
-#         title = request.POST.get('title')
-#         short_description = request.POST.get('short_description')
-#         detailed_paragraph = request.POST.get('detailed_paragraph')
-#         image = request.FILES.get('image')
-#         user_id = request.POST.get('user_id')
-#         star_ratings = request.POST.get('star_ratings')
+# # @csrf_exempt
+# # def post_blog(request):
+# #     if request.method == 'POST':
+# #         # Retrieve the blog details from the request
+# #         title = request.POST.get('title')
+# #         short_description = request.POST.get('short_description')
+# #         detailed_paragraph = request.POST.get('detailed_paragraph')
+# #         image = request.FILES.get('image')
+# #         user_id = request.POST.get('user_id')
+# #         star_ratings = request.POST.get('star_ratings')
 
-#         # Retrieve the User instance
-#         user = get_object_or_404(User, id=user_id)
+# #         # Retrieve the User instance
+# #         user = get_object_or_404(User, id=user_id)
 
-#         # Create a new blog instance
-#         blog = Blog(
-#             title=title,
-#             short_description=short_description,
-#             detailed_paragraph=detailed_paragraph,
-#             user=user,
-#             star_ratings=star_ratings
-#         )
+# #         # Create a new blog instance
+# #         blog = Blog(
+# #             title=title,
+# #             short_description=short_description,
+# #             detailed_paragraph=detailed_paragraph,
+# #             user=user,
+# #             star_ratings=star_ratings
+# #         )
 
-#         # If an image is provided, assign it to the blog instance
-#         if image:
-#             blog.image = image
+# #         # If an image is provided, assign it to the blog instance
+# #         if image:
+# #             blog.image = image
 
-#         # Save the blog
-#         blog.save()
+# #         # Save the blog
+# #         blog.save()
 
-#         return JsonResponse({'message': 'Blog posted successfully'})
-#     else:
-#         return JsonResponse({'error': 'Invalid request method'})
+# #         return JsonResponse({'message': 'Blog posted successfully'})
+# #     else:
+# #         return JsonResponse({'error': 'Invalid request method'})
 
-# def get_blogs(request):
-#     blogs = Blog.objects.all()
+# # def get_blogs(request):
+# #     blogs = Blog.objects.all()
 
-#     blog_data = []
-#     for blog in blogs:
-#         blog_data.append({
-#             'title': blog.title,
-#             'short_description': blog.short_description,
-#             'detailed_paragraph': blog.detailed_paragraph,
-#             'image': blog.image.url if blog.image else None,
-#             'user': blog.user.username,
-#             'star_ratings': blog.star_ratings,
-#             'posted_date': blog.posted_date.strftime('%Y-%m-%d'),
-#         })
+# #     blog_data = []
+# #     for blog in blogs:
+# #         blog_data.append({
+# #             'title': blog.title,
+# #             'short_description': blog.short_description,
+# #             'detailed_paragraph': blog.detailed_paragraph,
+# #             'image': blog.image.url if blog.image else None,
+# #             'user': blog.user.username,
+# #             'star_ratings': blog.star_ratings,
+# #             'posted_date': blog.posted_date.strftime('%Y-%m-%d'),
+# #         })
 
-#     return JsonResponse({'blogs': blog_data})
+# #     return JsonResponse({'blogs': blog_data})
 
-# @csrf_exempt
-# def signin(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
+# # @csrf_exempt
+# # def signin(request):
+# #     if request.method == 'POST':
+# #         username = request.POST.get('username')
+# #         password = request.POST.get('password')
 
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None:
-#             login(request, user)
-#             return JsonResponse({'message': 'Sign in successful'})
-#         else:
-#             return JsonResponse({'error': 'Invalid credentials'})
-#     else:
-#         return JsonResponse({'error': 'Invalid request method'})
+# #         user = authenticate(request, username=username, password=password)
+# #         if user is not None:
+# #             login(request, user)
+# #             return JsonResponse({'message': 'Sign in successful'})
+# #         else:
+# #             return JsonResponse({'error': 'Invalid credentials'})
+# #     else:
+# #         return JsonResponse({'error': 'Invalid request method'})
 
-# @csrf_exempt
-# def signup(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
+# # @csrf_exempt
+# # def signup(request):
+# #     if request.method == 'POST':
+# #         username = request.POST.get('username')
+# #         password = request.POST.get('password')
 
-#         if username and password:
-#             # Create a new user
-#             user = User.objects.create_user(username=username, password=password)
-#             return JsonResponse({'message': 'Sign up successful'})
-#         else:
-#             return JsonResponse({'error': 'Username and password are required'})
-#     else:
-#         return JsonResponse({'error': 'Invalid request method'})
+# #         if username and password:
+# #             # Create a new user
+# #             user = User.objects.create_user(username=username, password=password)
+# #             return JsonResponse({'message': 'Sign up successful'})
+# #         else:
+# #             return JsonResponse({'error': 'Username and password are required'})
+# #     else:
+# #         return JsonResponse({'error': 'Invalid request method'})
 
-# def signout(request):
-    logout(request)
-    return JsonResponse({'message': 'Logged out successfully'})
+# # def signout(request):
+#     logout(request)
+#     return JsonResponse({'message': 'Logged out successfully'})
 
+
+
+if __name__ == '__main__':
+    print("importing View")
