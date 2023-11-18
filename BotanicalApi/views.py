@@ -32,18 +32,21 @@ def process_image(request):
         print(uploaded_file)
 
         if uploaded_file:
-            # Create a unique filename to avoid overwriting existing files
-            file_name = f"{enum_value}_{uploaded_file.name}"
-            basepath = os.path.dirname(__file__)
-            print('basepath',basepath)
+            try:
+                # Create a unique filename to avoid overwriting existing files
+                file_name = f"{enum_value}_{uploaded_file.name}"
+                basepath = os.path.dirname(__file__)
+                print('basepath',basepath)
 
-            # Define the destination path
-            destination_path = os.path.join(basepath, 'uploads', file_name)
+                # Define the destination path
+                destination_path = os.path.join(basepath, 'uploads', file_name)
 
-            # Open a file for writing and save the content
-            with open(destination_path, 'wb') as destination_file:
-                for chunk in uploaded_file.chunks():
-                    destination_file.write(chunk)
+                # Open a file for writing and save the content
+                with open(destination_path, 'wb') as destination_file:
+                    for chunk in uploaded_file.chunks():
+                        destination_file.write(chunk)
+            except:
+                return JsonResponse({'message': 'No file uploaded', 'prediction': "error"})  
         else:
             return JsonResponse({'message': 'No file uploaded', 'prediction': "error"})
 
@@ -89,16 +92,25 @@ def process_image(request):
                 
             except:
                 # Remove the file after processing
-                os.remove(destination_path)
+                try:
+                    os.remove(destination_path)
+                except:
+                    print("ërror")
                 return JsonResponse({'message': 'Image or Enum Failed or not passed', 'prediction': "error"})
         else:
            # Remove the file after processing
-           os.remove(destination_path)
+           try:
+                os.remove(destination_path)
+           except:
+                print("ërror")
            return JsonResponse({'message': message, 'prediction': "Not a leaf"}) 
 
     else:
         # Remove the file after processing
-        os.remove(destination_path)
+        try:
+            os.remove(destination_path)
+        except:
+            print("ërror")
         return JsonResponse({'error': 'Invalid request method'})
 
 @csrf_exempt
