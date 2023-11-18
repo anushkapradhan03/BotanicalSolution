@@ -7,16 +7,15 @@ import numpy as np
 import cv2
 
 
-basePath = settings.BASE_DIR
 # Model saved with Keras model.save()
-diseaseDetectionAndSolutionRelativePath = '/BotanicalApi/mlModel/diseaseDetectionAndSolutionModel.h5'
-diseaseDetectionAndSolutionModelPath= os.path.join(basePath, diseaseDetectionAndSolutionRelativePath)
+diseaseDetectionAndSolutionRelativePath = '\mlModel\diseaseDetectionAndSolutionModel.h5'
 
 
 
 
 # # Function to load a saved .h5 model and make predictions
 def load_and_predict_h5_model(model_path):
+    print(model_path)
     # Load the saved model
     model = keras.models.load_model(model_path)
     return model
@@ -36,7 +35,13 @@ def model_predict(img_path, model):
 
 def detectDesease(file_path):
     # Make prediction
-    DiseaseDetectionAndSolutionModel = load_and_predict_h5_model(diseaseDetectionAndSolutionModelPath)
+    print(file_path)
+    # diseaseDetectionAndSolutionModelPath= os.path.join(base_path, diseaseDetectionAndSolutionRelativePath)
+    # print(diseaseDetectionAndSolutionModelPath)
+    DiseaseDetectionAndSolutionModel = load_and_predict_h5_model(r'D:\remoteGIThub\BotanicalSolution\BotanicalApi\mlModel\diseaseDetectionAndSolutionModel.h5')
+    # file_path = r'D:\remoteGIThub\BotanicalSolution\BotanicalApi\uploads\PaperBellBact Spot.JPG'
+    # image = cv2.imread(file_path)
+    # print(image)
     preds = model_predict(file_path, DiseaseDetectionAndSolutionModel)
 
     # Process your result for human

@@ -111,7 +111,7 @@ def create_key_value_string(result):
 
 def detectIsLeaf(image_path):
     result = {'leaf': 0.9532, 'flower': 0.8965, 'tree': 0.6231}
-    # result = getObectTypeResult(image_path)
+    result = getObectTypeResult(image_path)
     if(result=="error"):
        message = "Fail To Load"
        isPlant = False

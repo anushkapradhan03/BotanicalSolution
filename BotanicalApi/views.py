@@ -31,46 +31,74 @@ def process_image(request):
         enum_value = request.POST.get('enum')
         print(uploaded_file)
 
-        try:
-            # Save the file to ./uploads
+        if uploaded_file:
+            # Create a unique filename to avoid overwriting existing files
+            file_name = f"{enum_value}_{uploaded_file.name}"
             basepath = os.path.dirname(__file__)
             print('basepath',basepath)
-            fs = FileSystemStorage(location=os.path.join(os.path.dirname(__file__), 'uploads'))
-            filename = fs.save(uploaded_file.name, uploaded_file)
-            file_path = fs.url(filename)
-        except:
-            return JsonResponse({'message': 'Image Saving Failed', 'prediction': "error"})
+
+            # Define the destination path
+            destination_path = os.path.join(basepath, 'uploads', file_name)
+
+            # Open a file for writing and save the content
+            with open(destination_path, 'wb') as destination_file:
+                for chunk in uploaded_file.chunks():
+                    destination_file.write(chunk)
+        else:
+            return JsonResponse({'message': 'No file uploaded', 'prediction': "error"})
+
+        # try:
+        #     # Save the file to ./uploads
+        #     basepath = os.path.dirname(__file__)
+        #     print('basepath',basepath)
+        #     fs = FileSystemStorage(location=os.path.join(os.path.dirname(__file__), 'uploads'))
+        #     filename = fs.save(uploaded_file.name, uploaded_file)
+        #     file_path = fs.url(filename)
+        # except:
+        #     return JsonResponse({'message': 'Image Saving Failed', 'prediction': "error"})
 
         # detect Plant leave of not
-        try:
-            messageLeaf, isPlant = detectIsLeaf(file_path)
-            message = message + 'This Image is : ' + messageLeaf
+        # try:
+        #     messageLeaf, isPlant = detectIsLeaf(file_path)
+        #     message = message + 'This Image is : ' + messageLeaf
             
-        except:
-            return JsonResponse({'message': 'Image processed Fail', 'prediction': "error"})
+        # except:
+        #     return JsonResponse({'message': 'Image processed Fail', 'prediction': "error"})
         
+        isPlant = True
         if(isPlant):
-
+            print(enum_value)
             try:
                 if(enum_value=="solution"):
-                    prediction = detectDesease(file_path)
-                    prediction = "Testing"
+                    
+                    prediction = detectDesease(destination_path)
 
                     # Return the prediction result or any other response
                     message = message + " | Image processed successfully: detectDesease'" 
+                    # Remove the file after processing
+                    os.remove(destination_path)
                     return JsonResponse({'message': message, 'prediction': prediction})
                 elif(enum_value=="leaf"):
                     # prediction = detectLeafType(file_path)
                     prediction = "Feature Under Development"
                     message = message + " | Image processed successfully: leafPredection'" 
+                    # Remove the file after processing
+                    os.remove(destination_path)
                     return JsonResponse({'message': message, 'prediction': prediction})
             
+                
             except:
+                # Remove the file after processing
+                os.remove(destination_path)
                 return JsonResponse({'message': 'Image or Enum Failed or not passed', 'prediction': "error"})
         else:
+           # Remove the file after processing
+           os.remove(destination_path)
            return JsonResponse({'message': message, 'prediction': "Not a leaf"}) 
 
     else:
+        # Remove the file after processing
+        os.remove(destination_path)
         return JsonResponse({'error': 'Invalid request method'})
 
 @csrf_exempt
@@ -89,7 +117,7 @@ def plant_suggestion(request):
                 return JsonResponse({'predicted_plant Failed To predict'}, status=206)
 
         except:
-            return JsonResponse({'error': 'temperature, precipitation, elevation not form-data'},  status=404)
+            return JsonResponse({'error': 'temperature, precipitation, elevation not in form-data'},  status=404)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=404)
 
